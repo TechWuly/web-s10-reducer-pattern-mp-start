@@ -1,4 +1,4 @@
-import React from 'react' // 👈 you'll need the reducer hook
+import React, {useReducer} from 'react' // 👈 you'll need the reducer hook
 import Quotes from './Quotes'
 import QuoteForm from './QuoteForm'
 
@@ -11,34 +11,42 @@ const TOGGLE_VISIBILITY = 'TOGGLE_VISIBILITY'             // 👈 toggles whethe
 
 let id = 1
 const getNextId = () => id++ // 👈 this is a helper to create new quotes
-const quotes = [
-  {
-    id: getNextId(),
-    quoteText: "Don't cry because it's over, smile because it happened.",
-    authorName: "Dr. Seuss",
-    apocryphal: false,
-  },
-  {
-    id: getNextId(),
-    quoteText: "So many books, so little time.",
-    authorName: "Frank Zappa",
-    apocryphal: false,
-  },
-  {
-    id: getNextId(),
-    quoteText: "Be yourself; everyone else is already taken.",
-    authorName: "Oscar Wilde",
-    apocryphal: false,
-  },
-]
+
+const initialState = {
+  displayAllQuotes: true ,
+  highlightedQuote: null,
+  quotes : [
+    {
+      id: getNextId(),
+      quoteText: "Don't cry because it's over, smile because it happened.",
+      authorName: "Dr. Seuss",
+      apocryphal: false,
+    },
+    {
+      id: getNextId(),
+      quoteText: "So many books, so little time.",
+      authorName: "Frank Zappa",
+      apocryphal: false,
+    },
+    {
+      id: getNextId(),
+      quoteText: "Be yourself; everyone else is already taken.",
+      authorName: "Oscar Wilde",
+      apocryphal: false,
+    },
+  ]
+  
+}
 
 // 👇 create your initial state object here
 
 const reducer = (state, action) => {
+  return state;
   // 👇 implement your reducer here using the action types above
 }
 
 export default function App() {
+  const [state, dispatch] = useReducer(reducer, initialState)
   // 👇 use the reducer hook to spin up state and dispatch
 
   const createQuote = ({ authorName, quoteText }) => {
@@ -62,7 +70,8 @@ export default function App() {
     <div id="mp">
       <h2>Module Project</h2>
       <Quotes
-        quotes={quotes}
+        quotes={state.quotes}
+        highlightedQuote={state.highlightedQuote}
       // 👇 lots of props are missing! Check the Quotes component
 
       />
