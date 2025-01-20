@@ -12,8 +12,10 @@ const TOGGLE_VISIBILITY = 'TOGGLE_VISIBILITY'             // 👈 toggles whethe
 let id = 1
 const getNextId = () => id++ // 👈 this is a helper to create new quotes
 
+// 👇 create your initial state object here
+
 const initialState = {
-  displayAllQuotes: true ,
+  displayAllQuotes: true,
   highlightedQuote: null,
   quotes : [
     {
@@ -38,32 +40,68 @@ const initialState = {
   
 }
 
-// 👇 create your initial state object here
 
+// 👇 implement your reducer here using the action types above
 const reducer = (state, action) => {
-  return state;
-  // 👇 implement your reducer here using the action types above
+  switch (action.type) {
+    case CREATE_QUOTE:
+      return { 
+        ...state, 
+        quotes: [...state.quotes, action.payload] };
+    case DELETE_QUOTE:
+      return { 
+        ...state, 
+        quotes: state.quotes.filter(quote => quote.id !== action.payload) };
+    case EDIT_QUOTE_AUTHENTICITY:
+      return {
+        ...state,
+        quotes: state.quotes.map(quote => {
+          if(quote.id != action.payload) return quote
+          return {...quote, apocryphal:!quote.apocryphal}
+        }),
+      };
+    case SET_HIGHLIGHTED_QUOTE:
+      return {
+        ...state,
+        highlightedQuote: state.highlightedQuote === action.payload
+        ? null : action.payload
+      };
+    case TOGGLE_VISIBILITY:
+      return { 
+        ...state, 
+        displayAllQuotes: !state.displayAllQuotes };
+    default:
+      return state;
+  }
+  
 }
 
 export default function App() {
-  const [state, dispatch] = useReducer(reducer, initialState)
+  
   // 👇 use the reducer hook to spin up state and dispatch
+  const [state, dispatch] = useReducer(reducer, initialState)
 
-  const createQuote = ({ authorName, quoteText }) => {
     // 👇 use the helper function above to create a new quote
     // 👇 and dispatch it over to the reducer
+    const createQuote = ({ authorName, quoteText }) => {
+    const newQuote = {id: getNextId(), authorName, quoteText,apocryphal:false}
+    dispatch({type: CREATE_QUOTE, payload: newQuote})
   }
   const deleteQuote = id => {
     // 👇 implement
+    dispatch({type:DELETE_QUOTE, payload:id})
   }
   const editQuoteAuthenticity = id => {
     // 👇 implement
+    dispatch({type:EDIT_QUOTE_AUTHENTICITY, payload:id})
   }
   const setHighlightedQuote = id => {
     // 👇 implement
+    dispatch({type:SET_HIGHLIGHTED_QUOTE, payload:id})
   }
   const toggleVisibility = () => {
     // 👇 implement
+    dispatch({type: TOGGLE_VISIBILITY})
   }
 
   return (
@@ -72,6 +110,11 @@ export default function App() {
       <Quotes
         quotes={state.quotes}
         highlightedQuote={state.highlightedQuote}
+        displayAllQuotes={state.displayAllQuotes}
+        editQuoteAuthenticity={editQuoteAuthenticity}
+        setHighlightedQuote={setHighlightedQuote}
+        toggleVisibility={toggleVisibility}
+        deleteQuote={deleteQuote}
       // 👇 lots of props are missing! Check the Quotes component
 
       />
